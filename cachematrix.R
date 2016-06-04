@@ -2,18 +2,18 @@
 
 makeCacheMatrix <- function(x = matrix()) {
   #initialize the inverse of the matrix 
-  inv <- matrix(, nrow=nrow(x), ncol=ncol(x))
-  #define where to cache a new defined matrix and clear any previously calculated matrix inverse 
+   minv <- NULL
+  #store a newly defined matrix (in the cachesolve function) in cache 
   set <- function(y) {
     x <<- y
-    inv <<- matrix(, nrow=nrow(x), ncol=ncol(x))
+    minv <<- NULL
   }
   #read the value of a previously defined matrix from the cache
   get <- function() x
   #store the value of a newly inverted matrix into cache
-  setinverse <- function(solve) inv <<- solve
+  setinverse <- function(solve) minv <<- solve
   #read the value of a previously inverted matrix from the cache
-  getinverse <- function() inv
+  getinverse <- function() minv
   #pass on the value of the function makeCacheMatrix
   list(set = set, get = get,
        setinverse = setinverse,
@@ -27,17 +27,17 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
-     inv <- x$getinverse
+     minv <- x$getinverse
      #if the inverse exists already in cache, go and get it from there
-     if (!(all(is.na(inv)))) {
+     if (!is.null(minv)) {
        message("reading inverted matrix from cache")
-       return(inv)
+       return(minv)
      }
      #if there is no inverted matrix in cache, read matrix from cache
      data <- x$get()
      #calculate inverted matrix and store it in cache
-     inv <- solve(data, ...)
-     x$setinverse(inv)
+     minv <- solve(data, ...)
+     x$setinverse(minv)
      #show the inverted matrix
-     inv     
+     minv     
 }
